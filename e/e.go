@@ -3,7 +3,9 @@ package e
 import (
 	"errors"
 	"fmt"
+	"os"
 	"runtime"
+	"strings"
 )
 
 type (
@@ -134,6 +136,25 @@ func FormatStack(stack []*runtime.Frame) []string {
 	rs := make([]string, 0, len(stack))
 	for _, frame := range stack {
 		rs = append(rs, fmt.Sprintf("%s:%d %s", frame.File, frame.Line, frame.Function))
+	}
+	return rs
+}
+
+func ShortStack(stack []string) []string {
+	pwd, _ := os.Getwd()
+	pwd += string(os.PathSeparator)
+
+	var rs []string
+	for _, s := range stack {
+		if strings.Contains(s, "/go/libexec/src/") {
+			continue
+		}
+
+		if strings.Contains(s, pwd) {
+			s = strings.Replace(s, pwd, "", 1)
+		}
+
+		rs = append(rs, s)
 	}
 	return rs
 }

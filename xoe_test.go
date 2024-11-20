@@ -47,6 +47,7 @@ func TestStacks1(t *testing.T) {
 	e.DefaultWithStack = true
 	err := e.With(fmt.Errorf("error"))
 	fmt.Println(strings.Join(e.FormatStack(e.GetStack(err)), "\n"))
+	fmt.Println(strings.Join(e.ShortStack(e.FormatStack(e.GetStack(err))), "\n"))
 }
 
 func TestStacks2(t *testing.T) {
