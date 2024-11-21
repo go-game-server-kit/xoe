@@ -8,6 +8,15 @@ func Loe(err error, args ...Args) bool {
 	return false
 }
 
+func LoeFn(fn func() error, args ...Args) bool {
+	err := fn()
+	if err != nil {
+		Log("LoeFn", err, args)
+		return true
+	}
+	return false
+}
+
 func Loe1With[T1 any](t1 T1, err error) func(args ...Args) T1 {
 	return func(args ...Args) T1 {
 		if err != nil {
