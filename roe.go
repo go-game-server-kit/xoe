@@ -8,6 +8,15 @@ func Roe(err error, args ...Args) bool {
 	return false
 }
 
+func RoeFn(fn func() error, args ...Args) bool {
+	err := fn()
+	if err != nil {
+		Report("RoeFn", err, args)
+		return true
+	}
+	return false
+}
+
 func Roe1With[T1 any](t1 T1, err error) func(args ...Args) T1 {
 	return func(args ...Args) T1 {
 		if err != nil {
