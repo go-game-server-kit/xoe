@@ -8,6 +8,15 @@ func Poe(err error, args ...Args) bool {
 	return false
 }
 
+func PoeFn(fn func() error, args ...Args) bool {
+	err := fn()
+	if err != nil {
+		Report("PoeFn", err, args)
+		panic(err)
+	}
+	return false
+}
+
 func Poe1With[T1 any](t1 T1, err error) func(args ...Args) T1 {
 	return func(args ...Args) T1 {
 		if err != nil {
