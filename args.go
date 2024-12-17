@@ -124,6 +124,12 @@ func WithData(data Data) Args {
 	}
 }
 
+func WithKV(k string, v any) Args {
+	return &DataArgs{
+		data: Data{k: v},
+	}
+}
+
 func (s *StackArgs) Apply(arg *Arg) {
 	arg.WithStack = true
 }
