@@ -21,7 +21,7 @@ type (
 var (
 	_reporter = log.New(os.Stderr, "[xoe:report] ", log.LstdFlags)
 	reporter  = func(err error, arg *Arg) {
-		_reporter.Println(NewStack(arg.StackSkip+4).ShortFile(), arg.String(err))
+		_reporter.Println(arg.String(err))
 	}
 )
 
@@ -30,7 +30,7 @@ func SetReporter(r Reporter) {
 }
 
 func Report(tag string, err error, args []Args) {
-	arg := NewArg(tag, args)
+	arg := NewArg(tag, err, args)
 	arg.Reporter(err, arg)
 }
 

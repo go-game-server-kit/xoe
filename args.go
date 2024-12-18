@@ -2,6 +2,7 @@ package xoe
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/mohuani/notify/dingtalk/message"
 	"strings"
 )
@@ -30,10 +31,6 @@ const (
 	ActionResolve = "resolve"
 	// ActionNotice 通知无需任何操作
 	ActionNotice = "notice"
-)
-
-var (
-	DefaultWithStack = true
 )
 
 type (
@@ -188,8 +185,15 @@ func WithAction(action string) Args {
 	}
 }
 
-func NewArg(tag string, args []Args) *Arg {
-	a := &Arg{Tag: tag}
+func NewArg(tag string, err error, args []Args) *Arg {
+	var err1 *EoeError
+	var a *Arg
+	if errors.As(err, &err1) {
+		a = err1.arg
+		a.Tag = tag
+	} else {
+		a = &Arg{Tag: tag, WithStack: true}
+	}
 	for _, arg := range args {
 		arg.Apply(a)
 	}
@@ -199,7 +203,7 @@ func NewArg(tag string, args []Args) *Arg {
 	if a.Logger == nil {
 		a.Logger = logger
 	}
-	if a.WithStack || DefaultWithStack {
+	if a.WithStack && a.Stack == nil {
 		a.Stack = NewStack(4 + a.StackSkip)
 	}
 	if a.At == nil {
@@ -214,19 +218,29 @@ func NewArg(tag string, args []Args) *Arg {
 func (a *Arg) String(err error) string {
 	var str []string
 	if a.Tag != "" {
-		str = append(str, "tag="+a.Tag)
+		str = append(str, "\n  tag: "+a.Tag)
 	}
 	if a.Msg != "" {
-		str = append(str, "msg="+a.Msg)
+		str = append(str, "\n  msg: "+a.Msg)
 	}
 	if err != nil {
-		str = append(str, "err="+err.Error())
+		if err1, ok := err.(EoeError); ok {
+			err = err1.error
+		}
+		str = append(str, "\n  err: "+err.Error())
 	}
 	if len(a.Data) > 0 {
-		str = append(str, "data="+a.Data.String())
+		str = append(str, "\n  data: "+a.Data.String())
 	}
 	if len(a.Stack) > 0 {
-		str = append(str, "\n\tstack:\n\t"+strings.ReplaceAll(a.Stack.String(), "\n", "\n\t"))
+		str = append(str, "\n  stack:\n    "+strings.ReplaceAll(a.Stack.String(), "\n", "\n    "))
 	}
 	return strings.Join(str, " ")
+}
+
+func (a *Arg) Apply(args ...Args) *Arg {
+	for _, arg := range args {
+		arg.Apply(a)
+	}
+	return a
 }

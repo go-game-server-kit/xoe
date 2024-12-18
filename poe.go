@@ -1,9 +1,11 @@
 package xoe
 
+import "os"
+
 func Poe(err error, args ...Args) bool {
 	if err != nil {
 		Report("Poe", err, args)
-		panic(err)
+		os.Exit(1)
 	}
 	return false
 }
@@ -12,7 +14,7 @@ func PoeFn(fn func() error, args ...Args) bool {
 	err := fn()
 	if err != nil {
 		Report("PoeFn", err, args)
-		panic(err)
+		os.Exit(1)
 	}
 	return false
 }
@@ -21,7 +23,7 @@ func Poe1With[T1 any](t1 T1, err error) func(args ...Args) T1 {
 	return func(args ...Args) T1 {
 		if err != nil {
 			Report("Poe1", err, args)
-			panic(err)
+			os.Exit(1)
 		}
 		return t1
 	}
@@ -35,7 +37,7 @@ func Poe2With[T1 any, T2 any](t1 T1, t2 T2, err error) func(args ...Args) (T1, T
 	return func(args ...Args) (T1, T2) {
 		if err != nil {
 			Report("Poe2", err, args)
-			panic(err)
+			os.Exit(1)
 		}
 		return t1, t2
 	}
@@ -49,7 +51,7 @@ func Poe3With[T1 any, T2 any, T3 any](t1 T1, t2 T2, t3 T3, err error) func(args 
 	return func(args ...Args) (T1, T2, T3) {
 		if err != nil {
 			Report("Poe3", err, args)
-			panic(err)
+			os.Exit(1)
 		}
 		return t1, t2, t3
 	}
@@ -63,7 +65,7 @@ func Poe4With[T1 any, T2 any, T3 any, T4 any](t1 T1, t2 T2, t3 T3, t4 T4, err er
 	return func(args ...Args) (T1, T2, T3, T4) {
 		if err != nil {
 			Report("Poe4", err, args)
-			panic(err)
+			os.Exit(1)
 		}
 		return t1, t2, t3, t4
 	}
@@ -77,7 +79,7 @@ func Poe5With[T1 any, T2 any, T3 any, T4 any, T5 any](t1 T1, t2 T2, t3 T3, t4 T4
 	return func(args ...Args) (T1, T2, T3, T4, T5) {
 		if err != nil {
 			Report("Poe5", err, args)
-			panic(err)
+			os.Exit(1)
 		}
 		return t1, t2, t3, t4, t5
 	}
@@ -91,7 +93,7 @@ func Poe6With[T1 any, T2 any, T3 any, T4 any, T5 any, T6 any](t1 T1, t2 T2, t3 T
 	return func(args ...Args) (T1, T2, T3, T4, T5, T6) {
 		if err != nil {
 			Report("Poe6", err, args)
-			panic(err)
+			os.Exit(1)
 		}
 		return t1, t2, t3, t4, t5, t6
 	}
